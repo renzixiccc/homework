@@ -17,6 +17,7 @@ const CreatePost = () => {
     category_id: '',
     status: 'draft'
   })
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetchCategories()
@@ -61,27 +62,36 @@ const CreatePost = () => {
     }))
   }
 
+  const buildPostPayload = (statusOverride) => {
+    const status = statusOverride || formData.status
+    return {
+      ...formData,
+      status,
+      category_id: formData.category_id || null,
+      author_id: user.id,
+      published_at: status === 'published' ? new Date().toISOString() : null
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!user) return
 
     setLoading(true)
+    setError('')
     try {
-      const postData = {
-        ...formData,
-        author_id: user.id,
-        published_at: formData.status === 'published' ? new Date().toISOString() : null
-      }
+      const postData = buildPostPayload()
 
-      const { error } = await supabase
+      const { error: insertError } = await supabase
         .from('posts')
         .insert(postData)
 
-      if (error) throw error
+      if (insertError) throw insertError
 
       navigate('/')
     } catch (error) {
       console.error('Error creating post:', error)
+      setError(error.message || '创建文章失败，请稍后再试')
     } finally {
       setLoading(false)
     }
@@ -91,22 +101,20 @@ const CreatePost = () => {
     if (!user) return
 
     setLoading(true)
+    setError('')
     try {
-      const postData = {
-        ...formData,
-        status: 'draft',
-        author_id: user.id
-      }
+      const postData = buildPostPayload('draft')
 
-      const { error } = await supabase
+      const { error: insertError } = await supabase
         .from('posts')
         .insert(postData)
 
-      if (error) throw error
+      if (insertError) throw insertError
 
       navigate('/profile')
     } catch (error) {
       console.error('Error saving draft:', error)
+      setError(error.message || '保存草稿失败，请稍后再试')
     } finally {
       setLoading(false)
     }
@@ -116,6 +124,17 @@ const CreatePost = () => {
     <div className="container">
       <div className="card">
         <h1 style={{ marginBottom: '2rem', color: '#1f2937' }}>创建新文章</h1>
+        {error && (
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: '#fee2e2', 
+            color: '#dc2626', 
+            borderRadius: '6px', 
+            marginBottom: '1rem' 
+          }}>
+            {error}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">

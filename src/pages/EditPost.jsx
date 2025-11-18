@@ -104,6 +104,7 @@ const EditPost = () => {
     try {
       const postData = {
         ...formData,
+        category_id: formData.category_id || null,
         published_at: formData.status === 'published' ? new Date().toISOString() : null
       }
 
