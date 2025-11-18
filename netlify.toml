@@ -1,0 +1,19 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://tvudxyysfhtmmcrqzusj.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2dWR4eXlzZmh0bW1jcnF6dXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0OTc3ODMsImV4cCI6MjA3ODA3Mzc4M30.5BDIpesKSNJOf5pH-vYm1DF1J2dMrtthmDketv-v33w"
+
+[context.deploy-preview.environment]
+  VITE_SUPABASE_URL = "https://tvudxyysfhtmmcrqzusj.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2dWR4eXlzZmh0bW1jcnF6dXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0OTc3ODMsImV4cCI6MjA3ODA3Mzc4M30.5BDIpesKSNJOf5pH-vYm1DF1J2dMrtthmDketv-v33w"
