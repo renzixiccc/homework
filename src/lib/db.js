@@ -57,6 +57,36 @@ export const getCategoryBySlug = async (slug) => {
   return { data, error }
 }
 
+export const createCategory = async (payload) => {
+  const { data, error } = await supabase
+    .from('categories')
+    .insert(payload)
+    .select()
+    .single()
+
+  return { data, error }
+}
+
+export const updateCategory = async (id, payload) => {
+  const { data, error } = await supabase
+    .from('categories')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .single()
+
+  return { data, error }
+}
+
+export const deleteCategory = async (id) => {
+  const { error } = await supabase
+    .from('categories')
+    .delete()
+    .eq('id', id)
+
+  return { error }
+}
+
 // 文章相关
 export const getPublishedPosts = async () => {
   const { data, error } = await supabase
