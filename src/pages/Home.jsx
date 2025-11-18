@@ -19,22 +19,7 @@ const Home = () => {
     try {
       const { data, error } = await supabase
         .from('posts')
-        .select(`
-          *,
-          author:author_id (
-            id,
-            user_profiles (
-              username,
-              full_name,
-              avatar_url
-            )
-          ),
-          category:category_id (
-            id,
-            name,
-            slug
-          )
-        `)
+        .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false })
 

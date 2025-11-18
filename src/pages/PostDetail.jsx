@@ -27,22 +27,7 @@ const PostDetail = () => {
     try {
       const { data, error } = await supabase
         .from('posts')
-        .select(`
-          *,
-          author:author_id (
-            id,
-            user_profiles (
-              username,
-              full_name,
-              avatar_url
-            )
-          ),
-          category:category_id (
-            id,
-            name,
-            slug
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .single()
 
