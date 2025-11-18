@@ -64,6 +64,19 @@ const Register = () => {
           if (profileError) {
             console.error('创建用户资料失败：', profileError)
           }
+
+          // 同时在 users 表里插入记录
+          const { error: userError } = await supabase
+            .from('users')
+            .insert({
+              id: userId,
+              username: formData.username || formData.email.split('@')[0],
+              email: formData.email
+            })
+
+          if (userError) {
+            console.error('创建用户表记录失败：', userError)
+          }
         } else {
           // 某些情况下 signUp 不直接返回 user，这里兜底再取一次
           const { data: userData, error: getUserError } = await supabase.auth.getUser()
@@ -76,6 +89,19 @@ const Register = () => {
             })
             if (profileError) {
               console.error('创建用户资料失败：', profileError)
+            }
+
+            // 同时在 users 表里插入记录
+            const { error: userError } = await supabase
+              .from('users')
+              .insert({
+                id: userData.user.id,
+                username: formData.username || formData.email.split('@')[0],
+                email: formData.email
+              })
+
+            if (userError) {
+              console.error('创建用户表记录失败：', userError)
             }
           }
         }
