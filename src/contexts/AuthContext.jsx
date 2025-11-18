@@ -23,24 +23,6 @@ export const AuthProvider = ({ children }) => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
       setLoading(false)
-      // 确保 user_profiles 中存在对应记录，避免 posts 外键约束失败
-      if (user) {
-        console.log('[AuthContext] Checking profile for user:', user.id)
-        try {
-          const { data: profileData, error: profileError } = await getUserProfile(user.id)
-          console.log('[AuthContext] Profile check - data:', profileData, 'error:', profileError)
-          if (!profileData) {
-            console.log('[AuthContext] Profile not found, creating...')
-            const { data: created, error: createErr } = await createUserProfile({ id: user.id, email: user.email })
-            console.log('[AuthContext] Profile creation result - data:', created, 'error:', createErr)
-            if (createErr) {
-              console.error('[AuthContext] Failed to create profile:', createErr)
-            }
-          }
-        } catch (err) {
-          console.error('[AuthContext] Unexpected error ensuring profile:', err)
-        }
-      }
     }
 
     getUser()
@@ -48,28 +30,8 @@ export const AuthProvider = ({ children }) => {
     // 监听认证状态变化
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        const u = session?.user ?? null
-        console.log('[AuthContext] Auth state changed - event:', event, 'user:', u?.id)
-        setUser(u)
+        setUser(session?.user ?? null)
         setLoading(false)
-        // 登录/登出时也尝试确保 profile 存在
-        if (u) {
-          console.log('[AuthContext] Auth state change: checking profile for user:', u.id)
-          try {
-            const { data: profileData, error: profileError } = await getUserProfile(u.id)
-            console.log('[AuthContext] Auth state change profile check - data:', profileData, 'error:', profileError)
-            if (!profileData) {
-              console.log('[AuthContext] Auth state change: creating profile...')
-              const { data: created, error: createErr } = await createUserProfile({ id: u.id, email: u.email })
-              console.log('[AuthContext] Auth state change profile creation - data:', created, 'error:', createErr)
-              if (createErr) {
-                console.error('[AuthContext] Auth state change: failed to create profile:', createErr)
-              }
-            }
-          } catch (err) {
-            console.error('[AuthContext] Auth state change: unexpected error:', err)
-          }
-        }
       }
     )
 

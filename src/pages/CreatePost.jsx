@@ -103,23 +103,17 @@ const CreatePost = () => {
     setLoading(true)
     setError('')
     try {
-      console.log('[CreatePost] Starting draft save for user:', user.id)
       const postData = buildPostPayload('draft')
-      console.log('[CreatePost] Post payload:', postData)
 
-      console.log('[CreatePost] Inserting into posts table...')
-      const { error: insertError, data } = await supabase
+      const { error: insertError } = await supabase
         .from('posts')
         .insert(postData)
 
-      console.log('[CreatePost] Insert response - error:', insertError, 'data:', data)
-
       if (insertError) throw insertError
 
-      console.log('[CreatePost] Draft saved successfully, navigating to profile')
       navigate('/profile')
     } catch (error) {
-      console.error('[CreatePost] Error saving draft:', error)
+      console.error('Error saving draft:', error)
       setError(error.message || '保存草稿失败，请稍后再试')
     } finally {
       setLoading(false)
