@@ -162,22 +162,20 @@ const Categories = () => {
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h1 style={{ margin: 0, color: '#1f2937' }}>文章分类管理</h1>
-          {user && (
-            <button
-              onClick={() => {
-                if (showForm) {
-                  handleCancel()
-                } else {
-                  setShowForm(true)
-                  setEditingId(null)
-                }
-              }}
-              className="btn btn-primary"
-              style={{ marginBottom: 0 }}
-            >
-              {showForm ? '取消' : '+ 新建分类'}
-            </button>
-          )}
+          <button
+            onClick={() => {
+              if (showForm) {
+                handleCancel()
+              } else {
+                setShowForm(true)
+                setEditingId(null)
+              }
+            }}
+            className="btn btn-primary"
+            style={{ marginBottom: 0 }}
+          >
+            {showForm ? '取消' : '+ 新建分类'}
+          </button>
         </div>
 
         {error && (
@@ -259,7 +257,7 @@ const Categories = () => {
                   <th style={{ padding: '1rem', fontWeight: '600', color: '#374151' }}>URL 别名</th>
                   <th style={{ padding: '1rem', fontWeight: '600', color: '#374151' }}>文章数</th>
                   <th style={{ padding: '1rem', fontWeight: '600', color: '#374151' }}>描述</th>
-                  {user && <th style={{ padding: '1rem', fontWeight: '600', color: '#374151' }}>操作</th>}
+                  <th style={{ padding: '1rem', fontWeight: '600', color: '#374151' }}>操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -278,40 +276,38 @@ const Categories = () => {
                     <td style={{ padding: '1rem', color: '#6b7280', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {category.description || '-'}
                     </td>
-                    {user && (
-                      <td style={{ padding: '1rem' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <button
-                            onClick={() => handleEdit(category)}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: '#3b82f6',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontSize: '0.875rem'
-                            }}
-                          >
-                            编辑
-                          </button>
-                          <button
-                            onClick={() => handleDelete(category.id)}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: '#ef4444',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontSize: '0.875rem'
-                            }}
-                          >
-                            删除
-                          </button>
-                        </div>
-                      </td>
-                    )}
+                    <td style={{ padding: '1rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => handleEdit(category)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem'
+                          }}
+                        >
+                          编辑
+                        </button>
+                        <button
+                          onClick={() => handleDelete(category.id)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem'
+                          }}
+                        >
+                          删除
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
