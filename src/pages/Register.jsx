@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useSupabase } from '../contexts/SupabaseContext'
+import { createUserProfile } from '../lib/db'
 
 const Register = () => {
   const { signUp } = useAuth()
+  const { supabase } = useSupabase()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
@@ -46,6 +49,37 @@ const Register = () => {
       if (error) {
         setError(error.message)
       } else {
+        // 从 signUp 返回的数据中获取用户 ID
+        const userId = data?.user?.id || data?.session?.user?.id
+
+        if (userId) {
+          // 创建用户 profile 记录
+          const { error: profileError } = await createUserProfile({
+            id: userId,
+            email: formData.email,
+            fullName: formData.fullName,
+            username: formData.username
+          })
+
+          if (profileError) {
+            console.error('创建用户资料失败：', profileError)
+          }
+        } else {
+          // 某些情况下 signUp 不直接返回 user，这里兜底再取一次
+          const { data: userData, error: getUserError } = await supabase.auth.getUser()
+          if (!getUserError && userData?.user) {
+            const { error: profileError } = await createUserProfile({
+              id: userData.user.id,
+              email: formData.email,
+              fullName: formData.fullName,
+              username: formData.username
+            })
+            if (profileError) {
+              console.error('创建用户资料失败：', profileError)
+            }
+          }
+        }
+
         // 注册成功，显示提示信息
         alert('注册成功！请检查邮箱并点击确认链接来激活账户。')
         navigate('/login')
